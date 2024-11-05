@@ -107,9 +107,9 @@ export default function ClaimTo() {
 
   return (
     <div className="bg-black flex flex-col items-center p-4">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-4xl">
-        <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
-          Claim ERC20 Tokens
+      <div className="bg-black p-8 rounded-lg shadow-md w-full max-w-4xl">
+        <h1 className="text-3xl font-bold mb-6 text-center text-white">
+          Claim an ERC20 Token with thirdweb Engine!
         </h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
