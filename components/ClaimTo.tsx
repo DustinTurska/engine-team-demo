@@ -111,15 +111,15 @@ export default function ClaimTo() {
   return (
     <div className="bg-black flex flex-col items-center p-4">
       <div className="bg-black p-8 rounded-lg shadow-md w-full max-w-4xl">
-        <h1 className="text-3xl font-bold mb-6 text-center text-white">
+        {/* <h1 className="text-3xl font-bold mb-6 text-center text-white">
           Claim an ERC20 Token with thirdweb Engine!
-        </h1>
+        </h1> */}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
             <div>
               <label
                 htmlFor="address"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-gray-300 mb-1"
               >
                 Address
               </label>
@@ -127,7 +127,7 @@ export default function ClaimTo() {
                 id="address"
                 type="text"
                 placeholder="Enter your wallet address"
-                className="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg p-2.5 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="block w-full text-sm text-white border border-gray-700 rounded-lg p-2.5 bg-black focus:outline-none focus:ring-1 focus:ring-white focus:border-transparent placeholder-gray-500 selection:bg-white selection:text-black autofill:bg-black"
                 value={toAddress}
                 onChange={(e) => setToAddress(e.target.value)}
                 required
@@ -136,7 +136,7 @@ export default function ClaimTo() {
             <div>
               <label
                 htmlFor="amount"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-gray-300 mb-1"
               >
                 Amount
               </label>
@@ -146,7 +146,7 @@ export default function ClaimTo() {
                 min="1"
                 max="5"
                 placeholder="1"
-                className="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg p-2.5 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="block w-full text-sm text-white border border-gray-700 rounded-lg p-2.5 bg-black focus:outline-none focus:ring-1 focus:ring-white focus:border-transparent placeholder-gray-500 selection:bg-white selection:text-black autofill:bg-black"
                 value={amount}
                 onChange={handleAmountChange}
                 required
