@@ -15,6 +15,7 @@ interface ClaimResult {
   amount: string;
   timestamp?: number;
   chainId: number;
+  network: 'Ethereum' | 'Base Sepolia' | 'Holesky';
 }
 
 export default function ClaimTo() {
@@ -62,7 +63,6 @@ export default function ClaimTo() {
     setIsSubmitting(true);
 
     try {
-      // Make the API call first
       const response = await fetch("/api/claimTo", {
         method: "POST",
         headers: {
@@ -77,21 +77,24 @@ export default function ClaimTo() {
 
       const result = await response.json();
 
-      // Now add to results with the real queueId
-      setResults(prev => [...prev, {
-        queueId: result.queueId,
-        status: "Queued",
-        toAddress,
-        amount,
-        timestamp: Date.now(),
-        chainId: CHAIN_ID,
-      }]);
+      const timestamp = Date.now();
+      setResults(prev => [...prev, 
+        {
+          ...result.holesky,
+          timestamp,
+          network: 'Holesky'
+        },
+        {
+          ...result.basesep,
+          timestamp,
+          network: 'Base Sep'
+        }
+      ]);
 
-      // Start polling for updates
-      pollTransactionStatus(result.queueId);
+      pollTransactionStatus(result.holesky.queueId);
+      pollTransactionStatus(result.basesep.queueId);
     } catch (error) {
       console.error("Error:", error);
-      // Update error handling as needed
     } finally {
       setIsSubmitting(false);
     }

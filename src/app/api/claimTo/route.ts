@@ -5,8 +5,10 @@ import { NextRequest, NextResponse } from "next/server";
 dotenv.config();
 
 const CHAIN_ID = "17000";
+const BASESEP_CHAIN_ID = "84532";
 const BACKEND_WALLET_ADDRESS = process.env.BACKEND_WALLET as string;
 const CONTRACT_ADDRESS = process.env.ERC20_CONTRACT_ADDRESS as string;
+const BASESEP_CONTRACT_ADDRESS = process.env.ERC20_CONTRACT_ADDRESS_BASESEP as string;
 
 console.log("Environment Variables:");
 console.log("CHAIN_ID:", CHAIN_ID);
@@ -30,10 +32,35 @@ interface ClaimResult {
   errorMessage?: string;
   toAddress?: string;
   amount?: string;
+  chainId?: string;
 }
 
 // Store ongoing polling processes
 const pollingProcesses = new Map<string, NodeJS.Timeout>();
+
+// Helper function to make a single claim
+async function makeClaimRequest(chainId: string, contractAddress: string, recipient: string, amount: string): Promise<ClaimResult> {
+  const res = await engine.erc20.claimTo(
+    chainId,
+    contractAddress,
+    BACKEND_WALLET_ADDRESS,
+    {
+      recipient,
+      amount: amount.toString(),
+    }
+  );
+
+  const initialResponse: ClaimResult = {
+    queueId: res.result.queueId,
+    status: "Queued",
+    toAddress: recipient,
+    amount,
+    chainId,
+  };
+
+  startPolling(res.result.queueId);
+  return initialResponse;
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -52,32 +79,23 @@ export async function POST(req: NextRequest) {
             };
           }
 
-          const res = await engine.erc20.claimTo(
-            CHAIN_ID,
-            CONTRACT_ADDRESS,
-            BACKEND_WALLET_ADDRESS,
-            {
-              recipient,
-              amount: amount.toString(),
-            }
-          );
+          // Make parallel claims on both chains
+          const [holesky, basesep] = await Promise.all([
+            makeClaimRequest(CHAIN_ID, CONTRACT_ADDRESS, recipient, amount.toString()),
+            makeClaimRequest(BASESEP_CHAIN_ID, BASESEP_CONTRACT_ADDRESS, recipient, amount.toString())
+          ]);
 
-          const initialResponse: ClaimResult = {
-            queueId: res.result.queueId,
-            status: "Queued",
-            toAddress: recipient,
-            amount,
+          return {
+            holesky,
+            basesep,
           };
-
-          startPolling(res.result.queueId);
-          return initialResponse;
         })
       );
 
       return NextResponse.json(batchResults);
     }
 
-    // Existing single transaction logic
+    // Single transaction logic
     const toAddress = body.toAddress || body.receiver;
     const amount = body.amount || body.quantity;
 
@@ -88,32 +106,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log(`Attempting to claim to: ${toAddress}, amount: ${amount}`);
-    console.log("Using CONTRACT_ADDRESS:", CONTRACT_ADDRESS);
+    // Make parallel claims on both chains
+    const [holesky, basesep] = await Promise.all([
+      makeClaimRequest(CHAIN_ID, CONTRACT_ADDRESS, toAddress, amount.toString()),
+      makeClaimRequest(BASESEP_CHAIN_ID, BASESEP_CONTRACT_ADDRESS, toAddress, amount.toString())
+    ]);
 
-    const res = await engine.erc20.claimTo(
-      CHAIN_ID,
-      CONTRACT_ADDRESS,
-      BACKEND_WALLET_ADDRESS,
-      {
-        recipient: toAddress,
-        amount: amount.toString(),
-      }
-    );
+    return NextResponse.json({
+      holesky,
+      basesep,
+    });
 
-    console.log("Claim initiated, queue ID:", res.result.queueId);
-    const initialResponse: ClaimResult = {
-      queueId: res.result.queueId,
-      status: "Queued",
-      toAddress,
-      amount,
-    };
-
-    // Start polling in the background
-    startPolling(res.result.queueId);
-
-    // Return the initial response immediately
-    return NextResponse.json(initialResponse);
   } catch (error: unknown) {
     console.error("Error claiming ERC20 tokens", error);
     if (error instanceof Error) {
@@ -179,7 +182,9 @@ async function pollToMine(queueId: string): Promise<ClaimResult> {
     case "mined":
       console.log("Transaction mined! 🥳 ERC20 tokens have been claimed", queueId);
       const transactionHash = status.result.transactionHash;
-      const blockExplorerUrl = `https://holesky.beaconcha.in/tx/${transactionHash}`;
+      const blockExplorerUrl = status.result.chainId === BASESEP_CHAIN_ID
+        ? `https://base-sepolia.blockscout.com/tx/${transactionHash}`
+        : `https://holesky.beaconcha.in/tx/${transactionHash}`;
       console.log("View transaction on the blockexplorer:", blockExplorerUrl);
       return {
         queueId,

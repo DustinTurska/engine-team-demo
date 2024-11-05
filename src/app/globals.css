@@ -17,6 +17,6 @@
 
 @layer base {
 	body {
-		@apply bg-white text-zinc-900;
+	  @apply bg-black text-neutral-200 min-h-screen;
 	}
-}
+  }

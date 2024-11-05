@@ -1,8 +1,7 @@
 export const CHAIN_NAMES: { [key: number]: string } = {
   1700: "Holesky",
   1: "Ethereum",
-  11155111: "Sepolia",
-  137: "Polygon",
+  84532: "Base Sepolia",
   // Add more chains as needed
 };
 
@@ -11,3 +10,4 @@ export const getChainName = (chainId: number): string => {
 };
 
 export const CHAIN_ID = 1700;
+export const BASESEP_CHAIN_ID = 84532;
