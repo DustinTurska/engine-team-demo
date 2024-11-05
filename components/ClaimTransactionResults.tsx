@@ -14,7 +14,7 @@ interface ClaimTransactionResults {
   amount: string;
   timestamp?: number;
   chainId: number;
-  network: 'Ethereum' | 'Base Sepolia' | 'Holesky';
+  network: 'Ethereum' | 'Base Sepolia' | 'OP Sep';
 }
 
 interface ClaimTransactionResultsProps {

@@ -15,7 +15,7 @@ interface ClaimResult {
   amount: string;
   timestamp?: number;
   chainId: number;
-  network: 'Ethereum' | 'Base Sepolia' | 'Holesky';
+  network: 'Ethereum' | 'Base Sepolia' | 'OP Sep';
 }
 
 export default function ClaimTo() {
@@ -80,9 +80,9 @@ export default function ClaimTo() {
       const timestamp = Date.now();
       setResults(prev => [...prev, 
         {
-          ...result.holesky,
+          ...result.opsep,
           timestamp,
-          network: 'Holesky'
+          network: 'OP Sep'
         },
         {
           ...result.basesep,
@@ -91,7 +91,7 @@ export default function ClaimTo() {
         }
       ]);
 
-      pollTransactionStatus(result.holesky.queueId);
+      pollTransactionStatus(result.opsep.queueId);
       pollTransactionStatus(result.basesep.queueId);
     } catch (error) {
       console.error("Error:", error);

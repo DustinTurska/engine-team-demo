@@ -4,10 +4,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 dotenv.config();
 
-const CHAIN_ID = "17000";
+const CHAIN_ID = "11155420";
 const BASESEP_CHAIN_ID = "84532";
 const BACKEND_WALLET_ADDRESS = process.env.BACKEND_WALLET as string;
-const CONTRACT_ADDRESS = process.env.ERC20_CONTRACT_ADDRESS as string;
+const CONTRACT_ADDRESS = process.env.ERC20_CONTRACT_ADDRESS_OPSEP as string;
 const BASESEP_CONTRACT_ADDRESS = process.env.ERC20_CONTRACT_ADDRESS_BASESEP as string;
 
 console.log("Environment Variables:");
@@ -80,13 +80,13 @@ export async function POST(req: NextRequest) {
           }
 
           // Make parallel claims on both chains
-          const [holesky, basesep] = await Promise.all([
+          const [opsep, basesep] = await Promise.all([
             makeClaimRequest(CHAIN_ID, CONTRACT_ADDRESS, recipient, amount.toString()),
             makeClaimRequest(BASESEP_CHAIN_ID, BASESEP_CONTRACT_ADDRESS, recipient, amount.toString())
           ]);
 
           return {
-            holesky,
+            opsep,
             basesep,
           };
         })
@@ -107,13 +107,13 @@ export async function POST(req: NextRequest) {
     }
 
     // Make parallel claims on both chains
-    const [holesky, basesep] = await Promise.all([
+    const [opsep, basesep] = await Promise.all([
       makeClaimRequest(CHAIN_ID, CONTRACT_ADDRESS, toAddress, amount.toString()),
       makeClaimRequest(BASESEP_CHAIN_ID, BASESEP_CONTRACT_ADDRESS, toAddress, amount.toString())
     ]);
 
     return NextResponse.json({
-      holesky,
+      opsep,
       basesep,
     });
 
@@ -184,7 +184,7 @@ async function pollToMine(queueId: string): Promise<ClaimResult> {
       const transactionHash = status.result.transactionHash;
       const blockExplorerUrl = status.result.chainId === BASESEP_CHAIN_ID
         ? `https://base-sepolia.blockscout.com/tx/${transactionHash}`
-        : `https://holesky.beaconcha.in/tx/${transactionHash}`;
+        : `https://optimism-sepolia.blockscout.com/tx/${transactionHash}`;
       console.log("View transaction on the blockexplorer:", blockExplorerUrl);
       return {
         queueId,
