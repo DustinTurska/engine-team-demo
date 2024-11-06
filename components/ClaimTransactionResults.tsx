@@ -33,7 +33,7 @@ export function ClaimTransactionResults({ results }: ClaimTransactionResultsProp
     blockExplorerUrl: "https://etherscan.io/tx/0xabcdef1234567890",
     toAddress: "0x1234567890abcdef",
     amount: "1.0",
-    timestamp: Date.now() - 30 * 60 * 1000,
+    timestamp: Date.now() - 15 * 60 * 1000,
     chainId: 1,
     network: 'Ethereum',
     errorMessage: undefined
@@ -41,10 +41,12 @@ export function ClaimTransactionResults({ results }: ClaimTransactionResultsProp
 
   const dummyTransaction2: ClaimTransactionResults = {
     queueId: "0x9876543210fedcba",
-    status: "Queued",
-    toAddress: "0x9876543210fedcba",
+    status: "Mined ⛏️",
+    transactionHash: "0x1234567890abcdef",
+    blockExplorerUrl: "https://etherscan.io/tx/0x1234567890abcdef",
+    toAddress: "0xabcdef1234567890",
     amount: "0.5",
-    timestamp: Date.now() - 15 * 60 * 1000,
+    timestamp: Date.now() - 30 * 60 * 1000,
     chainId: 1,
     network: 'Base Sep',
     errorMessage: undefined
@@ -101,7 +103,7 @@ export function ClaimTransactionResults({ results }: ClaimTransactionResultsProp
           Transaction Results
         </h2>
         <span className="text-sm text-neutral-400">
-          Last 24 hours • {sortedResults.length} transactions
+          Last 24 hours • {sortedResultsWithDummy.length} transactions
         </span>
       </div>
       <div className="relative max-h-[400px]">
