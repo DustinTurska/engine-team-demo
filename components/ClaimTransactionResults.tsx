@@ -24,9 +24,9 @@ export function ClaimTransactionResults({ results }: ClaimTransactionResultsProp
   const [currentPage, setCurrentPage] = useState(1);
   const [showLeftGradient, setShowLeftGradient] = useState(false);
   const [showRightGradient, setShowRightGradient] = useState(true);
-  const itemsPerPage = 5;
+  const itemsPerPage = 2;
 
-  const dummyTransaction: ClaimTransactionResults = {
+  const dummyTransaction1: ClaimTransactionResults = {
     queueId: "0x1234567890abcdef",
     status: "Mined ⛏️",
     transactionHash: "0xabcdef1234567890",
@@ -39,8 +39,19 @@ export function ClaimTransactionResults({ results }: ClaimTransactionResultsProp
     errorMessage: undefined
   };
 
+  const dummyTransaction2: ClaimTransactionResults = {
+    queueId: "0x9876543210fedcba",
+    status: "Queued",
+    toAddress: "0x9876543210fedcba",
+    amount: "0.5",
+    timestamp: Date.now() - 15 * 60 * 1000,
+    chainId: 1,
+    network: 'Base Sep',
+    errorMessage: undefined
+  };
+
   const sortedResults = [...results].reverse();
-  const sortedResultsWithDummy = [...sortedResults, dummyTransaction];
+  const sortedResultsWithDummy = [...sortedResults, dummyTransaction1, dummyTransaction2];
   
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -233,27 +244,25 @@ export function ClaimTransactionResults({ results }: ClaimTransactionResultsProp
         )}
       </div>
       
-      {totalPages > 1 && (
-        <div className="flex justify-between items-center mt-4 px-4">
-          <button
-            onClick={handlePrevPage}
-            disabled={currentPage === 1}
-            className="px-4 py-2 text-sm font-medium text-neutral-200 bg-gray-800 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Previous
-          </button>
-          <span className="text-neutral-400">
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 text-sm font-medium text-neutral-200 bg-gray-800 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Next
-          </button>
-        </div>
-      )}
+      <div className="flex justify-between items-center mt-4 px-4">
+        <button
+          onClick={handlePrevPage}
+          disabled={currentPage === 1}
+          className="px-4 py-2 text-sm font-medium text-neutral-200 bg-gray-800 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Previous
+        </button>
+        <span className="text-neutral-400">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 text-sm font-medium text-neutral-200 bg-gray-800 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 }
