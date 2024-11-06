@@ -3,19 +3,18 @@
 import { useState } from "react";
 import { Button } from "@nextui-org/react";
 import { ClaimTransactionResults } from "./ClaimTransactionResults";
-import { CHAIN_ID } from "../utils/chains";
 
 interface ClaimResult {
   queueId: string;
   status: "Queued" | "Sent" | "Mined ⛏️" | "error";
   transactionHash?: string;
   blockExplorerUrl?: string;
-  errorMessage?: string;
+  errorMessage: "Error" | undefined;
   toAddress: string;
   amount: string;
   timestamp?: number;
   chainId: number;
-  network: 'Ethereum' | 'Base Sepolia' | 'OP Sep';
+  network: 'Ethereum' | 'Base Sep' | 'OP Sep';
 }
 
 export default function ClaimTo() {

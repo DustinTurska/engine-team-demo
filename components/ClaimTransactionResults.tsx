@@ -2,19 +2,18 @@
 
 import React, { useState } from "react";
 import { format } from 'timeago.js';
-import { getChainName } from '../utils/chains';
 
 interface ClaimTransactionResults {
   queueId: string;
   status: "Queued" | "Sent" | "Mined ⛏️" | "error";
   transactionHash?: string;
   blockExplorerUrl?: string;
-  errorMessage?: string;
+  errorMessage: "Error" | undefined;
   toAddress: string;
   amount: string;
   timestamp?: number;
   chainId: number;
-  network: 'Ethereum' | 'Base Sepolia' | 'OP Sep';
+  network: 'Ethereum' | 'Base Sep' | 'OP Sep';
 }
 
 interface ClaimTransactionResultsProps {
@@ -36,7 +35,8 @@ export function ClaimTransactionResults({ results }: ClaimTransactionResultsProp
     amount: "1.0",
     timestamp: Date.now() - 30 * 60 * 1000,
     chainId: 1,
-    network: 'Ethereum'
+    network: 'Ethereum',
+    errorMessage: undefined
   };
 
   const sortedResults = [...results].reverse();
@@ -130,7 +130,30 @@ export function ClaimTransactionResults({ results }: ClaimTransactionResultsProp
                     )}`}
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-400">
-                    <span className="text-neutral-200">
+                    <span className="text-neutral-200 flex items-center gap-2">
+                      {result.network === 'Base Sep' && (
+                        <img 
+                          src="/BaseSep.png" 
+                          alt="Base" 
+                          className="w-4 h-4 min-w-[16px] min-h-[16px] object-contain"
+                          onLoad={(e) => {
+                            console.log('Base logo loaded', {
+                              naturalWidth: e.currentTarget.naturalWidth,
+                              naturalHeight: e.currentTarget.naturalHeight
+                            });
+                          }}
+                          onError={(e) => {
+                            console.error('Failed to load Base logo');
+                            e.currentTarget.style.display = 'none';
+                          }} 
+                        />
+                      )}
+                      {result.network === 'OP Sep' && (
+                        <img src="/OP.png" alt="Optimism Sep" className="w-4 h-4" />
+                      )}
+                      {result.network === 'Ethereum' && (
+                        <img src="/Ethereum.png" alt="Ethereum" className="w-4 h-4" />
+                      )}
                       {result.network}
                     </span>
                   </td>
@@ -181,26 +204,24 @@ export function ClaimTransactionResults({ results }: ClaimTransactionResultsProp
       </div>
       
       {totalPages > 1 && (
-        <div className="flex flex-col sm:flex-row justify-end items-center gap-4 mt-4 px-4">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={handlePrevPage}
-              disabled={currentPage === 1}
-              className="px-4 py-2 text-sm font-medium text-neutral-200 bg-gray-800 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Previous
-            </button>
-            <span className="text-neutral-400">
-              Page {currentPage} of {totalPages}
-            </span>
-            <button
-              onClick={handleNextPage}
-              disabled={currentPage === totalPages}
-              className="px-4 py-2 text-sm font-medium text-neutral-200 bg-gray-800 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Next
-            </button>
-          </div>
+        <div className="flex justify-between items-center mt-4 px-4">
+          <button
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+            className="px-4 py-2 text-sm font-medium text-neutral-200 bg-gray-800 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Previous
+          </button>
+          <span className="text-neutral-400">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 text-sm font-medium text-neutral-200 bg-gray-800 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Next
+          </button>
         </div>
       )}
     </div>

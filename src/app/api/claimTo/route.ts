@@ -198,7 +198,7 @@ async function pollToMine(queueId: string): Promise<ClaimResult> {
       return {
         queueId,
         status: "error",
-        errorMessage: status.result.errorMessage ?? "Unknown error occurred",
+        errorMessage: "Error",
       };
     default:
       return { queueId, status: "Queued" };
