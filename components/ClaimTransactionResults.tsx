@@ -65,12 +65,12 @@ export function ClaimTransactionResults({ results }: ClaimTransactionResultsProp
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Mined ⛏️":
-        return "bg-green-500 text-green-100";
+        return "bg-green-500/20 text-green-400";
       case "Queued":
       case "Pending":
-        return "bg-yellow-500 text-yellow-100";
+        return "bg-yellow-500/20 text-yellow-400";
       default:
-        return "bg-red-500 text-red-100";
+        return "bg-red-500/20 text-red-400";
     }
   };
 
@@ -158,9 +158,39 @@ export function ClaimTransactionResults({ results }: ClaimTransactionResultsProp
                     </span>
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-400">
-                    {`${result.toAddress.substring(0, 6)}...${result.toAddress.substring(
-                      result.toAddress.length - 4
-                    )}`}
+                    {(() => {
+                      const addressDisplay = `${result.toAddress.substring(0, 6)}...${result.toAddress.substring(
+                        result.toAddress.length - 4
+                      )}`;
+                      
+                      const getExplorerUrl = () => {
+                        switch (result.network) {
+                          case 'Base Sep':
+                            return `https://base-sepolia.blockscout.com/address/${result.toAddress}?tab=tokens`;
+                          case 'OP Sep':
+                            return `https://optimism-sepolia.blockscout.com/address/${result.toAddress}?tab=tokens`;
+                          case 'Ethereum':
+                            return `https://etherscan.io/address/${result.toAddress}?tab=tokens`;
+                          default:
+                            return null;
+                        }
+                      };
+
+                      const explorerUrl = getExplorerUrl();
+                      
+                      return explorerUrl ? (
+                        <a
+                          href={explorerUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-30 hover:text-white"
+                        >
+                          {addressDisplay}
+                        </a>
+                      ) : (
+                        addressDisplay
+                      );
+                    })()}
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-400">
                     {result.timestamp ? format(result.timestamp) : '----'}
@@ -178,7 +208,7 @@ export function ClaimTransactionResults({ results }: ClaimTransactionResultsProp
                         href={result.blockExplorerUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-indigo-600 hover:text-indigo-900"
+                        className="text-blue-30 hover:text-white"
                       >
                         {`${result.transactionHash.substring(0, 6)}...${result.transactionHash.substring(
                           result.transactionHash.length - 4

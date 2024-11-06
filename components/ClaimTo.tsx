@@ -18,7 +18,6 @@ interface ClaimResult {
 }
 
 export default function ClaimTo() {
-  const [amount, setAmount] = useState("1");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [results, setResults] = useState<ClaimResult[]>([]);
   const [toAddress, setToAddress] = useState("");
@@ -50,13 +49,8 @@ export default function ClaimTo() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!toAddress || !amount) {
-      alert("Please enter both address and amount.");
-      return;
-    }
-    const amountNum = parseInt(amount);
-    if (isNaN(amountNum) || amountNum < 1 || amountNum > 5) {
-      alert("Amount must be between 1 and 5.");
+    if (!toAddress) {
+      alert("Please enter an address.");
       return;
     }
     setIsSubmitting(true);
@@ -67,7 +61,7 @@ export default function ClaimTo() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ toAddress, amount }),
+        body: JSON.stringify({ toAddress, amount: "100" }),
       });
 
       if (!response.ok) {
@@ -99,20 +93,9 @@ export default function ClaimTo() {
     }
   };
 
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    const numValue = parseInt(value);
-    if (value === "" || (numValue >= 1 && numValue <= 5)) {
-      setAmount(value);
-    }
-  };
-
   return (
     <div className="bg-black flex flex-col items-center p-4">
       <div className="bg-black p-8 rounded-lg shadow-md w-full max-w-4xl">
-        {/* <h1 className="text-3xl font-bold mb-6 text-center text-white">
-          Claim an ERC20 Token with thirdweb Engine!
-        </h1> */}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
             <div>
@@ -132,25 +115,6 @@ export default function ClaimTo() {
                 required
               />
             </div>
-            <div>
-              <label
-                htmlFor="amount"
-                className="block text-sm font-medium text-gray-300 mb-1"
-              >
-                Amount
-              </label>
-              <input
-                id="amount"
-                type="number"
-                min="1"
-                max="5"
-                placeholder="1"
-                className="block w-full text-sm text-white border border-gray-700 rounded-lg p-2.5 bg-black focus:outline-none focus:ring-1 focus:ring-white focus:border-transparent placeholder-gray-500 selection:bg-white selection:text-black autofill:bg-black"
-                value={amount}
-                onChange={handleAmountChange}
-                required
-              />
-            </div>
           </div>
           <Button
             type="submit"
@@ -164,15 +128,6 @@ export default function ClaimTo() {
         </form>
         <div className="mt-8">
           <ClaimTransactionResults results={results} />
-          {/* {results.length > 0 && (
-            <Button
-              onClick={() => setResults([])}
-              color="secondary"
-              className="mt-4 w-full"
-            >
-              Clear Results
-            </Button>
-          )} */}
         </div>
       </div>
     </div>
