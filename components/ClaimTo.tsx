@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@nextui-org/react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import { ClaimTransactionResults } from "./ClaimTransactionResults";
 
 interface ClaimResult {
@@ -94,42 +97,45 @@ export default function ClaimTo() {
   };
 
   return (
-    <div className="bg-black flex flex-col items-center p-4">
-      <div className="bg-black p-8 rounded-lg shadow-md w-full max-w-4xl">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-4">
-            <div>
-              <label
-                htmlFor="address"
-                className="block text-sm font-medium text-gray-300 mb-1"
-              >
-                Address
-              </label>
-              <input
-                id="address"
-                type="text"
-                placeholder="Enter your wallet address"
-                className="block w-full text-sm text-white border border-gray-700 rounded-lg p-2.5 bg-black focus:outline-none focus:ring-1 focus:ring-white focus:border-transparent placeholder-gray-500 selection:bg-white selection:text-black autofill:bg-black"
-                value={toAddress}
-                onChange={(e) => setToAddress(e.target.value)}
-                required
-              />
+    <div className="flex flex-col items-center p-4">
+      <Card className="w-full max-w-4xl">
+        <CardContent className="p-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="address">
+                  Address
+                </Label>
+                <Input
+                  id="address"
+                  type="text"
+                  placeholder="Enter your wallet address"
+                  value={toAddress}
+                  onChange={(e) => setToAddress(e.target.value)}
+                  required
+                />
+              </div>
             </div>
+            <Button
+              type="submit"
+              disabled={isSubmitting || !toAddress}
+              className="w-full"
+            >
+              {isSubmitting ? (
+                <>
+                  <span className="loading loading-spinner"></span>
+                  Submitting...
+                </>
+              ) : (
+                "Claim Tokens"
+              )}
+            </Button>
+          </form>
+          <div className="mt-8">
+            <ClaimTransactionResults results={results} />
           </div>
-          <Button
-            type="submit"
-            color="primary"
-            isLoading={isSubmitting}
-            disabled={isSubmitting || !toAddress}
-            className="w-full"
-          >
-            {isSubmitting ? "Submitting..." : "Claim Tokens"}
-          </Button>
-        </form>
-        <div className="mt-8">
-          <ClaimTransactionResults results={results} />
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
