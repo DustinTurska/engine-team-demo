@@ -119,7 +119,7 @@ export default function ClaimTo() {
             <Button
               type="submit"
               disabled={isSubmitting || !toAddress}
-              className="w-full"
+              className="w-full rounded-full"
             >
               {isSubmitting ? (
                 <>

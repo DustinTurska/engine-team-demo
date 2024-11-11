@@ -19,7 +19,8 @@
 	body {
 	  @apply bg-black text-neutral-200 min-h-screen;
 	}
-  :root {
+  :root,
+  [data-theme="light"] {
 		--background: 0 0% 100%;
 		--foreground: 0 0% 3.9%;
 		--card: 0 0% 100%;
@@ -46,8 +47,9 @@
 		--chart-5: 27 87% 67%;
 		--radius: 0.5rem;
 	}
-  .dark {
-		--background: 0 0% 3.9%;
+  .dark,
+  [data-theme="dark"] {
+		--background: 0 0% 0%;
 		--foreground: 0 0% 98%;
 		--card: 0 0% 3.9%;
 		--card-foreground: 0 0% 98%;
@@ -81,4 +83,15 @@
   body {
     @apply bg-background text-foreground;
 	}
+}
+
+/* shadcn charts */
+@layer base {
+  :root {
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
 }
