@@ -98,12 +98,12 @@ export default function ClaimTo() {
 
   return (
     <div className="flex flex-col items-center p-4">
-      <Card className="w-full max-w-4xl">
+      <Card className="w-full max-w-4xl bg-background">
         <CardContent className="p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="address">
+                <Label htmlFor="address" className="text-foreground">
                   Address
                 </Label>
                 <Input
@@ -113,6 +113,7 @@ export default function ClaimTo() {
                   value={toAddress}
                   onChange={(e) => setToAddress(e.target.value)}
                   required
+                  className="text-foreground"
                 />
               </div>
             </div>
@@ -124,10 +125,10 @@ export default function ClaimTo() {
               {isSubmitting ? (
                 <>
                   <span className="loading loading-spinner"></span>
-                  Submitting...
+                  <span className="text-primary-foreground">Submitting...</span>
                 </>
               ) : (
-                "Claim Tokens"
+                <span className="text-primary-foreground">Claim Tokens</span>
               )}
             </Button>
           </form>

@@ -107,9 +107,9 @@ export function ClaimTransactionResults({ results }: ClaimTransactionResultsProp
   };
 
   return (
-    <Card className="w-full mt-8">
+    <Card className="w-full mt-8 bg-background">
       <CardHeader className="flex flex-row justify-between items-center">
-        <h2 className="text-xl font-semibold">
+        <h2 className="text-xl font-semibold text-foreground">
           Transaction Results
         </h2>
         <span className="text-sm text-muted-foreground">
@@ -177,7 +177,7 @@ export function ClaimTransactionResults({ results }: ClaimTransactionResultsProp
                           href={explorerUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-30 hover:text-white"
+                          className="text-[hsl(var(--link-foreground))] hover:text-foreground"
                         >
                           {addressDisplay}
                         </a>
@@ -200,7 +200,7 @@ export function ClaimTransactionResults({ results }: ClaimTransactionResultsProp
                         href={result.blockExplorerUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-30 hover:text-white"
+                        className="text-[hsl(var(--link-foreground))] hover:text-foreground"
                       >
                         {`${result.transactionHash.substring(0, 6)}...${result.transactionHash.substring(
                           result.transactionHash.length - 4
