@@ -2,6 +2,16 @@
 
 import React, { useState } from "react";
 import { format } from 'timeago.js';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 
 interface ClaimTransactionResults {
   queueId: string;
@@ -97,69 +107,40 @@ export function ClaimTransactionResults({ results }: ClaimTransactionResultsProp
   };
 
   return (
-    <div className="mt-8 w-full">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
-        <h2 className="text-xl font-semibold text-neutral-200">
+    <Card className="w-full mt-8">
+      <CardHeader className="flex flex-row justify-between items-center">
+        <h2 className="text-xl font-semibold">
           Transaction Results
         </h2>
-        <span className="text-sm text-neutral-400">
+        <span className="text-sm text-muted-foreground">
           Last 24 hours • {sortedResultsWithDummy.length} transactions
         </span>
-      </div>
-      <div className="relative max-h-[400px]">
-        <div 
-          className="overflow-x-auto overflow-y-hidden"
-          onScroll={handleScroll}
-        >
-          <table className="min-w-full divide-y divide-gray-700 border border-[0.5px] border-gray-700 table-fixed rounded-md">
-            <thead className="bg-black sticky top-0">
-              <tr>
-                <th className="min-w-[130px] px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                  Queue ID
-                </th>
-                <th className="min-w-[120px] px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                  Network
-                </th>
-                <th className="min-w-[130px] px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                  From
-                </th>
-                <th className="min-w-[130px] px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                  Queued
-                </th>
-                <th className="min-w-[100px] px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="min-w-[160px] px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                  Tx Hash
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-black divide-y divide-gray-700">
+      </CardHeader>
+      <CardContent className="relative max-h-[400px]">
+        <div className="overflow-x-auto" onScroll={handleScroll}>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="min-w-[130px]">Queue ID</TableHead>
+                <TableHead className="min-w-[120px]">Network</TableHead>
+                <TableHead className="min-w-[130px]">From</TableHead>
+                <TableHead className="min-w-[130px]">Queued</TableHead>
+                <TableHead className="min-w-[100px]">Status</TableHead>
+                <TableHead className="min-w-[160px]">Tx Hash</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {currentItems.map((result) => (
-                <tr key={`${result.network}-${result.queueId}`}>
-                  <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-neutral-200">
+                <TableRow key={`${result.network}-${result.queueId}`}>
+                  <TableCell className="font-medium">
                     {`${result.queueId.substring(0, 6)}...${result.queueId.substring(
                       result.queueId.length - 4
                     )}`}
-                  </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-400">
-                    <span className="text-neutral-200 flex items-center gap-2">
+                  </TableCell>
+                  <TableCell>
+                    <span className="flex items-center gap-2">
                       {result.network === 'Base Sep' && (
-                        <img 
-                          src="/BaseSep.png" 
-                          alt="Base" 
-                          className="w-4 h-4 min-w-[16px] min-h-[16px] object-contain"
-                          onLoad={(e) => {
-                            console.log('Base logo loaded', {
-                              naturalWidth: e.currentTarget.naturalWidth,
-                              naturalHeight: e.currentTarget.naturalHeight
-                            });
-                          }}
-                          onError={(e) => {
-                            console.error('Failed to load Base logo');
-                            e.currentTarget.style.display = 'none';
-                          }} 
-                        />
+                        <img src="/BaseSep.png" alt="Base" className="w-4 h-4" />
                       )}
                       {result.network === 'OP Sep' && (
                         <img src="/OP.png" alt="Optimism Sep" className="w-4 h-4" />
@@ -169,8 +150,8 @@ export function ClaimTransactionResults({ results }: ClaimTransactionResultsProp
                       )}
                       {result.network}
                     </span>
-                  </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-400">
+                  </TableCell>
+                  <TableCell>
                     {(() => {
                       const addressDisplay = `${result.toAddress.substring(0, 6)}...${result.toAddress.substring(
                         result.toAddress.length - 4
@@ -204,18 +185,16 @@ export function ClaimTransactionResults({ results }: ClaimTransactionResultsProp
                         addressDisplay
                       );
                     })()}
-                  </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-400">
+                  </TableCell>
+                  <TableCell>
                     {result.timestamp ? format(result.timestamp) : '----'}
-                  </td>
-                  <td className="px-4 py-4 whitespace-nowrap">
-                    <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(getDisplayStatus(result))}`}
-                    >
+                  </TableCell>
+                  <TableCell>
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(getDisplayStatus(result))}`}>
                       {getDisplayStatus(result)}
                     </span>
-                  </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-400">
+                  </TableCell>
+                  <TableCell>
                     {result.transactionHash && result.blockExplorerUrl ? (
                       <a
                         href={result.blockExplorerUrl}
@@ -232,39 +211,38 @@ export function ClaimTransactionResults({ results }: ClaimTransactionResultsProp
                     ) : (
                       "----"
                     )}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
         {showLeftGradient && (
-          <div className="sm:hidden absolute left-0 top-0 bottom-0 w-12 pointer-events-none bg-gradient-to-r from-black to-transparent" />
+          <div className="sm:hidden absolute left-0 top-0 bottom-0 w-12 pointer-events-none bg-gradient-to-r from-background to-transparent" />
         )}
         {showRightGradient && (
-          <div className="sm:hidden absolute right-0 top-0 bottom-0 w-12 pointer-events-none bg-gradient-to-l from-black to-transparent" />
+          <div className="sm:hidden absolute right-0 top-0 bottom-0 w-12 pointer-events-none bg-gradient-to-l from-background to-transparent" />
         )}
-      </div>
-      
-      <div className="flex justify-between items-center mt-4 px-4">
-        <button
+      </CardContent>
+      <CardFooter className="flex justify-between items-center">
+        <Button
+          variant="outline"
           onClick={handlePrevPage}
           disabled={currentPage === 1}
-          className="px-4 py-2 text-sm font-medium text-neutral-200 bg-gray-800 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Previous
-        </button>
-        <span className="text-neutral-400">
+        </Button>
+        <span className="text-muted-foreground">
           Page {currentPage} of {totalPages}
         </span>
-        <button
+        <Button
+          variant="outline"
           onClick={handleNextPage}
           disabled={currentPage === totalPages}
-          className="px-4 py-2 text-sm font-medium text-neutral-200 bg-gray-800 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Next
-        </button>
-      </div>
-    </div>
+        </Button>
+      </CardFooter>
+    </Card>
   );
 }
