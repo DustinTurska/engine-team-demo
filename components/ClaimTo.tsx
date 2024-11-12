@@ -97,8 +97,8 @@ export default function ClaimTo() {
   };
 
   return (
-    <div className="flex flex-col items-center p-4">
-      <Card className="w-full max-w-4xl bg-background">
+    <div className="flex flex-col items-center">
+      <Card className="w-full max-w-4xl bg-background border-none">
         <CardContent className="p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
@@ -120,15 +120,15 @@ export default function ClaimTo() {
             <Button
               type="submit"
               disabled={isSubmitting || !toAddress}
-              className="w-full rounded-full"
+              className="w-full rounded-lg"
             >
               {isSubmitting ? (
                 <>
                   <span className="loading loading-spinner"></span>
-                  <span className="text-primary-foreground">Submitting...</span>
+                  <span className="text-primary-foreground font-medium">Submitting...</span>
                 </>
               ) : (
-                <span className="text-primary-foreground">Claim Tokens</span>
+                <span className="text-primary-foreground font-medium">Claim Tokens</span>
               )}
             </Button>
           </form>
